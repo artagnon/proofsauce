@@ -91,10 +91,41 @@ Fixpoint napp (ls1 ls2 : nat_list) : nat_list :=
   | NCons n ls1' => NCons n (napp ls1' ls2)
   end.
 
-Theorem nlength_napp : forall ls1 ls2 : nat_list, nlength (napp ls1 ls2)
-                                                  = plus (nlength ls1) (nlength ls2).
+Theorem nlength_napp :
+  forall ls1 ls2 : nat_list, nlength (napp ls1 ls2)
+                             = plus (nlength ls1) (nlength ls2).
   induction ls1; crush.
 Qed.
 
 Check nat_list_ind.
 
+Inductive nat_btree : Set :=
+| NLeaf : nat_btree
+| NNode : nat_btree -> nat -> nat_btree -> nat_btree.
+
+Fixpoint nsize (tr : nat_btree) : nat :=
+  match tr with
+  | NLeaf => S O
+  | NNode trl _ trr => plus (nsize trl) (nsize trr)
+  end.
+
+Fixpoint nsplice (tr1 tr2 : nat_btree) : nat_btree :=
+  match tr1 with
+  | NLeaf => NNode tr2 O NLeaf
+  | NNode tr1' n tr2' => NNode (nsplice tr1' tr2) n tr2'
+  end.
+
+Theorem plus_assoc : forall n1 n2 n3 : nat,
+    plus (plus n1 n2) n3 = plus n1 (plus n2 n3).
+  induction n1; crush.
+Qed.
+
+Hint Rewrite n_plus_O plus_assoc.
+
+Theorem nsize_nsplice :
+  forall tr1 tr2 : nat_btree, nsize (nsplice tr1 tr2)
+                              = plus (nsize tr2) (nsize tr1).
+  induction tr1; crush.
+Qed.
+
+Check nat_btree_ind.
