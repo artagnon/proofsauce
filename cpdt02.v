@@ -129,3 +129,61 @@ Theorem nsize_nsplice :
 Qed.
 
 Check nat_btree_ind.
+
+Inductive list (T : Set) : Set :=
+| Nil : list T
+| Cons : T -> list T -> list T.
+
+Fixpoint length T (ls : list T) : nat :=
+  match ls with
+  | Nil => O
+  | Cons _ ls' => S (length ls')
+  end.
+
+Fixpoint app T (ls1 ls2 : list T) : list T :=
+  match ls1 with
+  | Nil => ls2
+  | Cons x ls1' => Cons x (app ls1' ls2)
+  end.
+
+Theorem length_app : forall T (ls1 ls2 : list T),
+    length (app ls1 ls2) = plus (length ls1) (length ls2).
+  induction ls1; crush.
+Qed.
+
+Print list.
+
+Inductive even_list : Set :=
+| ENil : even_list
+| ECons : nat -> odd_list -> even_list
+with odd_list : Set :=
+     | OCons : nat -> even_list -> odd_list.
+
+Fixpoint elength (el : even_list) : nat :=
+  match el with
+  | ENil => O
+  | ECons _ ol => S (olength ol)
+  end
+
+with olength (ol : odd_list) : nat :=
+       match ol with
+       | OCons _ el => S (elength el)
+       end.
+
+Fixpoint eapp (el1 el2 : even_list) : even_list :=
+  match el1 with
+  | ENil => el2
+  | ECons n ol => ECons n (oapp ol el2)
+  end
+
+with oapp (ol : odd_list) (el : even_list) : odd_list :=
+       match ol with
+       | OCons n el' => OCons n (eapp el' el)
+       end.
+
+Theorem elength_eapp : forall el1 el2 : even_list,
+    elength (eapp el1 el2) = plus (elength el1) (elength el2).
+  induction el1; crush.
+Abort.
+
+Check even_list_ind.
