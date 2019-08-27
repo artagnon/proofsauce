@@ -1,6 +1,5 @@
 From Coq Require Import ssreflect ssrfun ssrbool.
 From mathcomp Require Import ssrnat.
-From Coq Require FunctionalExtensionality Arith.PeanoNat.
 
 Theorem dbl_implies: forall P Q R : Prop, (P -> Q) -> (Q -> R) -> P -> R.
 Proof.
