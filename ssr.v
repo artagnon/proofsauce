@@ -7,7 +7,7 @@ Proof.
    * It is the opposite of the : tactical.
    * move is simply a placeholder and does nothing.
    * 'move => P Q R' is equivalent to 'intros P Q R' *)
-  move => P Q R; move => H0 H1 a.
+  move => P Q R H0 H1 a.
   exact (H1 (H0 a)).
 Qed.
 
@@ -40,10 +40,9 @@ Section connectives.
 
   Theorem contra (A B : Prop): (A -> B) -> ~ B -> ~ A.
   Proof.
-    move => H Hq.
     (* Uses ssreflect views to generalize and apply.
      * Still somewhat mysterious *)
-    move /H /Hq => //.
+    move => H Hq /H /Hq => //.
   Qed.
 
   Theorem quant A (S T: A -> Prop):
